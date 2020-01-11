@@ -43,6 +43,7 @@ class MemberDetailState extends State<MemberDetail> {
   bool _visibleCheckBox = false;
   String appBarTitle;
   Member member;
+  List<String> _positions = ["FrontLine", "Member", "Volunteer", "Other"];
   TextEditingController nameController = TextEditingController();
   TextEditingController regController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
@@ -50,6 +51,7 @@ class MemberDetailState extends State<MemberDetail> {
   TextEditingController fieldController = TextEditingController();
   TextEditingController positionController = TextEditingController();
   TextEditingController notesController = TextEditingController();
+  TextEditingController attendenceController = TextEditingController();
 
   MemberDetailState(this.appBarTitle, this.member);
 
@@ -127,6 +129,33 @@ class MemberDetailState extends State<MemberDetail> {
                         labelText: "Reg no.",
                         labelStyle: textStyle,
                         hintText: "Reg no. of member",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    child: TextFormField(
+                      // ignore: missing_return
+                      validator: (value) {
+                        if (value == null || int.parse(value) == 0) {
+                          return "attendence can not be empty";
+                        }
+                        if (int.parse(value) > 100) {
+                          return "Invalid attendence";
+                        }
+                      },
+                      controller: attendenceController,
+                      style: textStyle,
+                      onChanged: (value) {
+                        updateReg();
+                      },
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: "Attendence",
+                        labelStyle: textStyle,
+                        hintText: "no. of attendence of member",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)),
                       ),
@@ -275,6 +304,49 @@ class MemberDetailState extends State<MemberDetail> {
                       ]
                       )
                   ),
+                  Container(child: Text("Position", style: textStyle,),
+                    padding: EdgeInsets.only(top: 15.0, bottom: 0.0),),
+                  Padding(
+                    padding: EdgeInsets.only(top: 0.0, bottom: 15.0),
+                    child: ListTile(
+                      title: DropdownButton(
+                        items: _positions.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        style: textStyle,
+                        value: _positions[0],  // TODO change this to member's actual position
+                        onChanged: (valueSelected) {
+                          setState(() {
+                            updatePriority(valueSelected);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                    child: TextField(
+                      controller: notesController,
+                      style: textStyle,
+                      onChanged: (value) {
+                        updateNote();
+                      },
+                      decoration: InputDecoration(
+                        labelText: "Speical notes",
+                        labelStyle: textStyle,
+                        hintText: "write your note here",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      //expands: true,
+
+                    ),
+                  ),
                 ]
                 )
             )
@@ -306,6 +378,14 @@ class MemberDetailState extends State<MemberDetail> {
 
   void updateMobile() {
     member.mobilenumber = int.parse(mobileController.text);
+  }
+
+  void updatePriority(valueSelected) {
+    member.position = valueSelected;
+  }
+
+  void updateNote() {
+    member.note = notesController.text;
   }
 // List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
 
