@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:member_management/models/member.dart';
 import 'package:member_management/screens/member_details.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:member_management/utils/database_helper.dart';
+
 
 class MemberList extends StatefulWidget {
   @override
@@ -12,8 +16,9 @@ class MemberList extends StatefulWidget {
 }
 
 class MemberListState extends State<MemberList> {
+  DatabaseHelper databaseHelper = DatabaseHelper();
   List<Member> memberList;
-  int count = 5;
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +38,10 @@ class MemberListState extends State<MemberList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint("FAB clicked");
-          navigateToDetail(Member("prtik", 0, 0, "", [""], "", ""), "Add Member");
+          navigateToDetail(Member("", 0, 0, "", [], "", ""), "Add Member");
         },
         tooltip: "Add note",
-        child: Icon(Icons.add),
+        child: Icon(Icons.person_add),
       ),
     );
   }
@@ -46,22 +51,34 @@ class MemberListState extends State<MemberList> {
 
     return ListView.builder(
         itemCount: count,
-        itemBuilder: (BuildContext context, int position) {
+        itemBuilder: (BuildContext context, int posi) {
           return Card(color: Colors.white, elevation: 2.0, child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.red, // TODO implement color according to position
+              backgroundColor: getPositionColor(this.memberList[posi].position), // TODO implement color according to position
               child: Icon(Icons.play_arrow),
             ),
             onTap: (){
               debugPrint("tile clicked");
-              navigateToDetail(Member("pratik", 0, 0, "", [""], "", ""), "Edit Member");
+              navigateToDetail(this.memberList[posi], "Edit Member");
             },
             onLongPress: (){
               debugPrint("long pressed");
             },
-            title: Text("Sample name", style: titleStyle,),
-            subtitle: Text("Sample subtitle"),
-
+            title: Text(
+              this.memberList[posi].name,
+              style: titleStyle,
+            ),
+            subtitle: Text(this.memberList[posi].attendence.toString()),
+            trailing: GestureDetector(
+              child: Icon(Icons.add, color: Colors.grey,),
+              onTap: (){
+                debugPrint("Increase attendance");
+                this.memberList[posi].attendence++;
+                databaseHelper.updateMember(this.memberList[posi]);
+                updateListView();
+                _showSnackBar(context, "Attendance updated", this.memberList[posi]);
+                },
+            ),
           ));
         });
   }
@@ -75,5 +92,44 @@ class MemberListState extends State<MemberList> {
       updateListView();
     }
   }
-  void updateListView() {}
+//["FrontLine", "Member", "Volunteer", "Other"]
+  Color getPositionColor(position){
+    switch (position){
+      case "FrontLine": return Colors.red; break;
+      case "Member": return Colors.yellow; break;
+      case "Volunteer": return Colors.green; break;
+      case "Other": return Colors.deepPurple; break;
+
+    }
+  }
+
+  void _showSnackBar(BuildContext context, String message, Member member){
+    final snackbar = SnackBar(content: Text(message),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: (){
+          member.attendence--;
+          databaseHelper.updateMember(member);
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Undo Done"),));
+          updateListView();
+        },
+      ),);
+    Scaffold.of(context).showSnackBar(snackbar);
+  }
+
+
+
+
+  void updateListView() {
+    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+    dbFuture.then((database){
+      Future<List<Member>> memberListFuture = databaseHelper.getMemberList();
+      memberListFuture.then((memberList){
+        setState(() {
+          this.memberList = memberList;
+          this.count = memberList.length;
+        });
+      });
+    });
+  }
 }

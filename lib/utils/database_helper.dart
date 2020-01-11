@@ -52,7 +52,7 @@ class DatabaseHelper {
   }
 
   //fetch operation
-  Future<List<Map<String, dynamic>>> getNoteMapList(String orderName) async {
+  Future<List<Map<String, dynamic>>> getMemberMapList(String orderName) async {
     Database db = await this.database;
 
     //var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
@@ -61,21 +61,21 @@ class DatabaseHelper {
   }
 
   //insert operation
-  Future<int> insertNote(Member member) async {
+  Future<int> insertMember(Member member) async {
     var db = await this.database;
     var result = await db.insert(memberTable, member.toMap());
     return result;
   }
 
   //update operation
-  Future<int> updateNote(Member member) async {
+  Future<int> updateMember(Member member) async {
     var db = await this.database;
     var result = await db.update(memberTable, member.toMap(), where: '$colId = ?', whereArgs: [member.id]);
     return result;
   }
 
   //delete operation
-  Future<int> deleteNote(int id) async {
+  Future<int> deleteMember(int id) async {
     var db = await this.database;
     int result = await db.rawDelete('DELETE FROM $memberTable WHERE $colId = $id');
     return result;
@@ -88,15 +88,15 @@ class DatabaseHelper {
     return result;
   }
 
-  Future<List<Member>> getNoteList() async {
-    var noteMapList = await getNoteMapList("name");
-    int count = noteMapList.length;
+  Future<List<Member>> getMemberList() async {
+    var memberMapList = await getMemberMapList("name");
+    int count = memberMapList.length;
 
-    List<Member> noteList = List<Member>();
+    List<Member> memberList = List<Member>();
     for(int i = 0; i < count; i++){
-      noteList.add(Member.fromMapObject(noteMapList[i]));
+      memberList.add(Member.fromMapObject(memberMapList[i]));
     }
-    return noteList;
+    return memberList;
   }
 
 }
