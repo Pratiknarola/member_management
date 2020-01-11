@@ -67,6 +67,31 @@ class Member {
     _registration_number = value;
   }
 
+  String convertToYN(List<String> fields){
+    List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
+    String result = "NNNNNNNNN";
+    for(int i = 0; i < fields.length; i++){
+      for(int j = 0; j < allFields.length; j++){
+        if(fields[i].compareTo(allFields[j]) == 0){
+          result = result.replaceFirst(RegExp("N"), "Y", j);
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  List<String> fromYN(String ynList){
+    List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
+    List<String> fields;
+    for(int i = 0; i < ynList.length; i++){
+      if(ynList[i] == 'Y'){
+        fields.add(allFields[i]);
+      }
+    }
+    return fields;
+  }
+
   Map<String, dynamic> toMap(){
     var map = Map<String, dynamic>();
 
@@ -76,7 +101,7 @@ class Member {
     map['name'] = _name;
     map['registration_number'] = _registration_number;
     map['mobilenumber'] = _mobilenumber;
-    map['fields'] = _fields;
+    map['fields'] = convertToYN(_fields);
     map['position'] = _position;
     map['note'] = _note;
     map['attendence'] = _attendence;
@@ -90,7 +115,7 @@ class Member {
     this.name = map['name'];
     this._registration_number = map['registration_number'];
     this._mobilenumber = map['mobilenumber'];
-    this._fields = map['fields'];
+    this._fields = fromYN(map['fields']);
     this._position = map['position'];
     this._note = map['note'];
     this._attendence = map['attendence'];

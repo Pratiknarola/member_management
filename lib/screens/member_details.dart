@@ -28,7 +28,8 @@ class MemberDetailState extends State<MemberDetail> {
     "Web dev",
     "Video"
   ];
-  List<bool> checkValues = [
+
+  /*[
     false,
     false,
     false,
@@ -38,11 +39,12 @@ class MemberDetailState extends State<MemberDetail> {
     false,
     false,
     false
-  ];
+  ];*/
   bool checlval = true;
   bool _visibleCheckBox = false;
   String appBarTitle;
   Member member;
+
   List<String> _positions = ["FrontLine", "Member", "Volunteer", "Other"];
   TextEditingController nameController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
@@ -67,13 +69,14 @@ class MemberDetailState extends State<MemberDetail> {
 
   TextEditingController attendenceController = TextEditingController();
   final FocusNode _attendenceFocus = FocusNode();
-
+  List<bool> checkValues;
 
   MemberDetailState(this.appBarTitle, this.member);
 
   @override
   Widget build(BuildContext context) {
-    bool _enabled = true;
+    this.checkValues = getFieldBool(member);
+
     ThemeData theme = Theme.of(context);
     TextStyle textStyle = Theme.of(context).textTheme.title;
     // TODO: implement build
@@ -267,6 +270,8 @@ class MemberDetailState extends State<MemberDetail> {
                           onChanged: (bool value) {
                             setState(() {
                               checkValues[0] = !checkValues[0];
+                              member.fields = boolToFields(checkValues);
+                              updateFields();
                             });
                           },
                         ),
@@ -276,6 +281,7 @@ class MemberDetailState extends State<MemberDetail> {
                           onChanged: (bool value) {
                             setState(() {
                               checkValues[1] = !checkValues[1];
+                              member.fields = boolToFields(checkValues);
                             });
                           },
                         ),
@@ -436,6 +442,42 @@ class MemberDetailState extends State<MemberDetail> {
   void updateNote() {
     member.note = notesController.text;
   }
-// List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
 
+// List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
+  List<bool> getFieldBool(Member member){
+    List<String> fields = member.fields;
+    List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
+    List<bool> checkValues = [false, false, false, false, false, false, false, false, false];
+    for(int i = 0; i < fields.length; i++){
+      for(int j = 0; i < allFields.length; j++){
+        if(fields[i].compareTo(allFields[i]) == 0){
+          checkValues[j] = true;
+          break;
+        }
+      }
+    }
+
+    return checkValues;
+  }
+
+  List<String> boolToFields(List<bool> checks){
+    List<String> fields = [];
+    List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
+    for(int i = 0; i < fields.length; i++){
+      for(int j = 0; i < allFields.length; j++){
+        if(checks[i]){
+          fields.add(allFields[i]);
+          break;
+        }
+      }
+    }
+
+    return fields;
+  }
+
+
+
+  void updateFields() {
+    member.fields = boolToFields(checkValues);
+  }
 }
