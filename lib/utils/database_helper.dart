@@ -11,12 +11,13 @@ class DatabaseHelper {
   String memberTable = 'member_table';
   String colId = 'id';
   String colName = 'name';
-  String colRegNo = 'RegNo';
-  String colMobile = 'Mobile';
+  String colRegNo = "registration_number";
+  String colMobile = 'mobilenumber';
   String colEmail = 'email';
-  String colFields = 'Fields';
+  String colFields = 'fields';
   String colPosition = 'position';
-  String colNotes = 'notes';
+  String colNotes = 'note';
+  String colAttendance = "attendance";
 
 
 
@@ -48,7 +49,7 @@ class DatabaseHelper {
 
 
   void _createDb(Database db, int newVersion) async {
-    await db.execute("CREATE TABLE $memberTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT, $colRegNo INTEGER, $colMobile INTEGER, $colEmail TEXT, $colFields TEXT ,$colPosition TEXT, $colNotes TEXT )");
+    await db.execute("CREATE TABLE $memberTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT, $colRegNo INTEGER, $colMobile INTEGER,$colAttendance INTEGER, $colEmail TEXT, $colFields TEXT ,$colPosition TEXT, $colNotes TEXT )");
   }
 
   //fetch operation

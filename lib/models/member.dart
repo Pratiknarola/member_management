@@ -2,13 +2,13 @@ class Member {
 
   int _id;
   int _registration_number;
-  int _attendence = 0;
+  int _attendance = 0;
   String _name;
   String _email;
   int _mobilenumber;
   String _note;
   String _position;
-  List<String> _fields;
+  List<String> _fields = [];
 
   Member(this._name, this._registration_number, this._mobilenumber, this._email, this._fields, this._position, [this._note]);
   Member.withId(this._id, this._name, this._registration_number, this._mobilenumber, this._email, this._fields, this._position, [this._note]);
@@ -57,10 +57,10 @@ class Member {
     _name = value;
   }
 
-  int get attendence => _attendence;
+  int get attendance => _attendance;
 
-  set attendence(int value) {
-    _attendence = value;
+  set attendance(int value) {
+    _attendance = value;
   }
 
   set registration_number(int value) {
@@ -68,6 +68,9 @@ class Member {
   }
 
   String convertToYN(List<String> fields){
+    if(fields == null){
+      return "NNNNNNNNN";
+    }
     List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
     String result = "NNNNNNNNN";
     for(int i = 0; i < fields.length; i++){
@@ -104,7 +107,7 @@ class Member {
     map['fields'] = convertToYN(_fields);
     map['position'] = _position;
     map['note'] = _note;
-    map['attendence'] = _attendence;
+    map['attendance'] = _attendance;
 
 
     return map;
@@ -118,7 +121,7 @@ class Member {
     this._fields = fromYN(map['fields']);
     this._position = map['position'];
     this._note = map['note'];
-    this._attendence = map['attendence'];
+    this._attendance = map['attendance'];
 
   }
 

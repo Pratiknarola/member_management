@@ -42,7 +42,7 @@ class MemberDetailState extends State<MemberDetail> {
     false,
     false
   ];*/
-  bool checlval = true;
+
   bool _visibleCheckBox = false;
   String appBarTitle;
   Member member;
@@ -76,7 +76,22 @@ class MemberDetailState extends State<MemberDetail> {
   final FocusNode _attendenceFocus = FocusNode();
   DatabaseHelper helper = DatabaseHelper();
 
-  List<bool> checkValues;
+  List<bool> checkValues = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
+  String _dropValue = "Other";
+
+  void setCheckvalues(List<bool> values){
+    this.checkValues = values;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,23 +101,19 @@ class MemberDetailState extends State<MemberDetail> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
     nameController.text = member.name;
-    if(member.registration_number == 0){
+    if (member.registration_number == 0) {
       regController.text = "";
-    }
-    else{
+    } else {
       regController.text = member.registration_number.toString();
     }
-    if(member.mobilenumber == 0){
+    if (member.mobilenumber == 0) {
       mobileController.text = "";
-    }
-    else{
+    } else {
       mobileController.text = member.mobilenumber.toString();
     }
     emailController.text = member.email;
-    checkValues = getFieldBool(member);
+    setCheckvalues(getFieldBool(member.fields));
     notesController.text = member.note;
-
-
 
     // TODO: implement build
     return WillPopScope(
@@ -126,7 +137,6 @@ class MemberDetailState extends State<MemberDetail> {
                   Padding(
                     padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                     child: TextFormField(
-
                       // ignore: missing_return
                       validator: (value) {
                         if (value == null || value == '') {
@@ -210,7 +220,7 @@ class MemberDetailState extends State<MemberDetail> {
                       controller: attendenceController,
                       style: textStyle,
                       onChanged: (value) {
-                        updateReg();
+                        updateAttendance();
                       },
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -258,17 +268,17 @@ class MemberDetailState extends State<MemberDetail> {
                     padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                     child: TextFormField(
                       // ignore: missing_return
-                      validator: validateEmail,
+
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       focusNode: _emailFocus,
-                      onFieldSubmitted: (term) {
-                        _fieldFocusChange(context, _emailFocus, _positionFocus);
-                      },
+//                      onFieldSubmitted: (term) {
+//                        _fieldFocusChange(context, _emailFocus, _positionFocus);
+//                      },
                       controller: emailController,
                       style: textStyle,
                       onChanged: (value) {
-                        updateMobile();
+                        updateEmail();
                       },
                       decoration: InputDecoration(
                         labelText: "Email",
@@ -293,34 +303,51 @@ class MemberDetailState extends State<MemberDetail> {
                       child: Column(children: <Widget>[
                         CheckboxListTile(
                           title: Text(allFields[0]),
-                          value: checkValues[0],
+                          value: this.checkValues[0],
                           onChanged: (bool value) {
+                            debugPrint("value is $value");
+                            if(value) {
+                              member.fields.add(allFields[0]);
+                            }else{
+                              member.fields.remove(allFields[0]);
+                            }
                             setState(() {
-                              checkValues[0] = !checkValues[0];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              this.checkValues[0] = !this.checkValues[0];
+                            //  member.fields = boolToFields(checkValues);
+                            //  updateFields();
                             });
                           },
                         ),
                         CheckboxListTile(
                           title: Text(allFields[1]),
-                          value: checkValues[1],
+                          value: this.checkValues[1],
                           onChanged: (bool value) {
+                            debugPrint("value is $value");
+                            if(value) {
+                              member.fields.add(allFields[1]);
+                            }else{
+                              member.fields.remove(allFields[1]);
+                            }
                             setState(() {
-                              checkValues[1] = !checkValues[1];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              this.checkValues[1] = !this.checkValues[1];
+                             // member.fields = boolToFields(checkValues);
+                             // updateFields();
                             });
                           },
                         ),
                         CheckboxListTile(
                           title: Text(allFields[2]),
-                          value: checkValues[2],
+                          value: this.checkValues[2],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[2]);
+                            }else{
+                              member.fields.remove(allFields[2]);
+                            }
                             setState(() {
-                              checkValues[2] = !checkValues[2];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              this.checkValues[2] = !this.checkValues[2];
+                             // member.fields = boolToFields(checkValues);
+                            //  updateFields();
                             });
                           },
                         ),
@@ -328,10 +355,15 @@ class MemberDetailState extends State<MemberDetail> {
                           title: Text(allFields[3]),
                           value: checkValues[3],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[3]);
+                            }else{
+                              member.fields.remove(allFields[3]);
+                            }
                             setState(() {
-                              checkValues[3] = !checkValues[3];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              this.checkValues[3] = !this.checkValues[3];
+                              //member.fields = boolToFields(checkValues);
+                           //   updateFields();
                             });
                           },
                         ),
@@ -339,21 +371,31 @@ class MemberDetailState extends State<MemberDetail> {
                           title: Text(allFields[4]),
                           value: checkValues[4],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[4]);
+                            }else{
+                              member.fields.remove(allFields[4]);
+                            }
                             setState(() {
                               checkValues[4] = !checkValues[4];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              //member.fields = boolToFields(checkValues);
+                             // updateFields();
                             });
                           },
                         ),
                         CheckboxListTile(
                           title: Text(allFields[5]),
-                          value: checkValues[5],
+                          value: this.checkValues[5],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[5]);
+                            }else{
+                              member.fields.remove(allFields[5]);
+                            }
                             setState(() {
-                              checkValues[5] = !checkValues[5];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              this.checkValues[5] = !this.checkValues[5];
+                             // member.fields = boolToFields(checkValues);
+                              //updateFields();
                             });
                           },
                         ),
@@ -361,10 +403,15 @@ class MemberDetailState extends State<MemberDetail> {
                           title: Text(allFields[6]),
                           value: checkValues[6],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[6]);
+                            }else{
+                              member.fields.remove(allFields[6]);
+                            }
                             setState(() {
                               checkValues[6] = !checkValues[6];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              //member.fields = boolToFields(checkValues);
+                              //updateFields();
                             });
                           },
                         ),
@@ -372,10 +419,15 @@ class MemberDetailState extends State<MemberDetail> {
                           title: Text(allFields[7]),
                           value: checkValues[7],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[7]);
+                            }else{
+                              member.fields.remove(allFields[7]);
+                            }
                             setState(() {
                               checkValues[7] = !checkValues[7];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              //member.fields = boolToFields(checkValues);
+                              //updateFields();
                             });
                           },
                         ),
@@ -383,10 +435,15 @@ class MemberDetailState extends State<MemberDetail> {
                           title: Text(allFields[8]),
                           value: checkValues[8],
                           onChanged: (bool value) {
+                            if(value) {
+                              member.fields.add(allFields[8]);
+                            }else{
+                              member.fields.remove(allFields[8]);
+                            }
                             setState(() {
                               checkValues[8] = !checkValues[8];
-                              member.fields = boolToFields(checkValues);
-                              updateFields();
+                              //member.fields = boolToFields(checkValues);
+                              //updateFields();
                             });
                           },
                         ),
@@ -411,13 +468,13 @@ class MemberDetailState extends State<MemberDetail> {
                         style: textStyle,
                         focusNode: _positionFocus,
 
-                        value: member.position,
+                        value: _dropValue,
                         // TO DO change this to member's actual position
                         onChanged: (valueSelected) {
                           setState(() {
+                            _dropValue = valueSelected;
                             updatePosition(valueSelected);
-                            _fieldFocusChange(
-                                context, _emailFocus, _positionFocus);
+                            _fieldFocusChange(context, _emailFocus, _positionFocus);
                           });
                         },
                       ),
@@ -457,6 +514,7 @@ class MemberDetailState extends State<MemberDetail> {
                             ),
                             onPressed: () {
                               setState(() {
+                                updateFields();
                                 _save();
                               });
                             },
@@ -517,6 +575,7 @@ class MemberDetailState extends State<MemberDetail> {
   void updateMobile() {
     member.mobilenumber = int.parse(mobileController.text);
   }
+
   void updateFields() {
     member.fields = boolToFields(checkValues);
   }
@@ -530,8 +589,8 @@ class MemberDetailState extends State<MemberDetail> {
   }
 
 // List<String> allFields = ["Poster","Android","Photo editing","PR team","Oration","Instagram","Content","Web dev","Video"];
-  List<bool> getFieldBool(Member member) {
-    List<String> fields = member.fields;
+  List<bool> getFieldBool( List<String> fields) {
+
     List<String> allFields = [
       "Poster",
       "Android",
@@ -554,10 +613,14 @@ class MemberDetailState extends State<MemberDetail> {
       false,
       false
     ];
+    if(fields == null) {
+      return checkValues;
+    }
     for (int i = 0; i < fields.length; i++) {
       for (int j = 0; j < allFields.length; j++) {
         debugPrint("in getFieldBool with i $i and j $j");
         if (fields[i].compareTo(allFields[j]) == 0) {
+          debugPrint("Found for j = $j");
           checkValues[j] = true;
           break;
         }
@@ -611,6 +674,7 @@ class MemberDetailState extends State<MemberDetail> {
       _showAlertDialog('Status', 'Problem Saving Note');
     }
   }
+
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),
@@ -635,7 +699,11 @@ class MemberDetailState extends State<MemberDetail> {
     }
   }
 
+  void updateEmail() {
+   member.email = emailController.text;
+  }
 
-
-
+  void updateAttendance() {
+    member.attendance = int.parse(attendenceController.text);
+  }
 }

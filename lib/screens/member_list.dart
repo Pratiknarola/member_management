@@ -68,12 +68,12 @@ class MemberListState extends State<MemberList> {
               this.memberList[posi].name,
               style: titleStyle,
             ),
-            subtitle: Text(this.memberList[posi].attendence.toString()),
+            subtitle: Text(this.memberList[posi].attendance.toString()),
             trailing: GestureDetector(
               child: Icon(Icons.add, color: Colors.grey,),
               onTap: (){
                 debugPrint("Increase attendance");
-                this.memberList[posi].attendence++;
+                this.memberList[posi].attendance++;
                 databaseHelper.updateMember(this.memberList[posi]);
                 updateListView();
                 _showSnackBar(context, "Attendance updated", this.memberList[posi]);
@@ -108,7 +108,7 @@ class MemberListState extends State<MemberList> {
       action: SnackBarAction(
         label: 'Undo',
         onPressed: (){
-          member.attendence--;
+          member.attendance--;
           databaseHelper.updateMember(member);
           Scaffold.of(context).showSnackBar(SnackBar(content: Text("Undo Done"),));
           updateListView();
