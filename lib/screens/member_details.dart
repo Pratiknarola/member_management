@@ -45,13 +45,29 @@ class MemberDetailState extends State<MemberDetail> {
   Member member;
   List<String> _positions = ["FrontLine", "Member", "Volunteer", "Other"];
   TextEditingController nameController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
+
   TextEditingController regController = TextEditingController();
+  final FocusNode _regFocus = FocusNode();
+
   TextEditingController mobileController = TextEditingController();
+  final FocusNode _mobileFocus = FocusNode();
+
   TextEditingController emailController = TextEditingController();
+  final FocusNode _emailFocus = FocusNode();
+
   TextEditingController fieldController = TextEditingController();
+  final FocusNode _fieldFocus = FocusNode();
+
   TextEditingController positionController = TextEditingController();
+  final FocusNode _positionFocus = FocusNode();
+
   TextEditingController notesController = TextEditingController();
+  final FocusNode _notesFocus = FocusNode();
+
   TextEditingController attendenceController = TextEditingController();
+  final FocusNode _attendenceFocus = FocusNode();
+
 
   MemberDetailState(this.appBarTitle, this.member);
 
@@ -91,6 +107,11 @@ class MemberDetailState extends State<MemberDetail> {
                           return "Name too long";
                         }
                       },
+                      textInputAction: TextInputAction.next,
+                      focusNode: _nameFocus,
+                      onFieldSubmitted: (term){
+                        _fieldFocusChange(context, _nameFocus, _regFocus);
+                      },
                       controller: nameController,
                       style: textStyle,
                       onChanged: (value) {
@@ -119,6 +140,11 @@ class MemberDetailState extends State<MemberDetail> {
                           return "Invalid reg number";
                         }
                       },
+                      textInputAction: TextInputAction.next,
+                      focusNode: _regFocus,
+                      onFieldSubmitted: (term){
+                        _fieldFocusChange(context, _regFocus, _attendenceFocus);
+                      },
                       controller: regController,
                       style: textStyle,
                       onChanged: (value) {
@@ -145,6 +171,11 @@ class MemberDetailState extends State<MemberDetail> {
                         if (int.parse(value) > 100) {
                           return "Invalid attendence";
                         }
+                      },
+                      textInputAction: TextInputAction.next,
+                      focusNode: _attendenceFocus,
+                      onFieldSubmitted: (term){
+                        _fieldFocusChange(context, _attendenceFocus, _mobileFocus);
                       },
                       controller: attendenceController,
                       style: textStyle,
@@ -173,6 +204,11 @@ class MemberDetailState extends State<MemberDetail> {
                           return "Invalid mobile number";
                         }
                       },
+                      textInputAction: TextInputAction.next,
+                      focusNode: _mobileFocus,
+                      onFieldSubmitted: (term){
+                        _fieldFocusChange(context, _mobileFocus, _emailFocus);
+                      },
                       controller: mobileController,
                       style: textStyle,
                       keyboardType: TextInputType.number,
@@ -194,6 +230,11 @@ class MemberDetailState extends State<MemberDetail> {
                       // ignore: missing_return
                       validator: validateEmail,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      focusNode: _emailFocus,
+                      onFieldSubmitted: (term){
+                        _fieldFocusChange(context,_emailFocus, _positionFocus);
+                      },
                       controller: emailController,
                       style: textStyle,
                       onChanged: (value) {
@@ -317,10 +358,13 @@ class MemberDetailState extends State<MemberDetail> {
                           );
                         }).toList(),
                         style: textStyle,
+                        focusNode: _positionFocus,
+
                         value: _positions[0],  // TODO change this to member's actual position
                         onChanged: (valueSelected) {
                           setState(() {
                             updatePriority(valueSelected);
+                            _fieldFocusChange(context,_emailFocus, _positionFocus);
                           });
                         },
                       ),
@@ -329,6 +373,7 @@ class MemberDetailState extends State<MemberDetail> {
                   Padding(
                     padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                     child: TextField(
+
                       controller: notesController,
                       style: textStyle,
                       onChanged: (value) {
@@ -362,6 +407,10 @@ class MemberDetailState extends State<MemberDetail> {
       return 'Enter Valid Email';
     else
       return null;
+  }
+  _fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
   void updateName() {
