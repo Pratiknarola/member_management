@@ -107,6 +107,7 @@ class Member {
     map['fields'] = convertToYN(_fields);
     map['position'] = _position;
     map['note'] = _note;
+    map['email'] = _email;
     map['attendance'] = _attendance;
 
 
@@ -121,6 +122,7 @@ class Member {
     this._fields = fromYN(map['fields']);
     this._position = map['position'];
     this._note = map['note'];
+    this._email = map['email'];
     this._attendance = map['attendance'];
 
   }

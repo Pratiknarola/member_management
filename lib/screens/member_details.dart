@@ -76,18 +76,8 @@ class MemberDetailState extends State<MemberDetail> {
   final FocusNode _attendenceFocus = FocusNode();
   DatabaseHelper helper = DatabaseHelper();
 
-  List<bool> checkValues = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
-  String _dropValue = "Other";
+  List<bool> checkValues;
+  String _dropValue;
 
   void setCheckvalues(List<bool> values){
     this.checkValues = values;
@@ -96,7 +86,7 @@ class MemberDetailState extends State<MemberDetail> {
   @override
   Widget build(BuildContext context) {
     //this.checkValues = getFieldBool(member);
-
+    debugPrint("Started execution of build");
     ThemeData theme = Theme.of(context);
     TextStyle textStyle = Theme.of(context).textTheme.title;
 
@@ -112,8 +102,17 @@ class MemberDetailState extends State<MemberDetail> {
       mobileController.text = member.mobilenumber.toString();
     }
     emailController.text = member.email;
+    for(int i = 0; i < member.fields.length; i++){
+      debugPrint("field value ${member.fields[i]}");
+    }
     setCheckvalues(getFieldBool(member.fields));
+    for(int i = 0; i < checkValues.length; i++){
+      debugPrint("checkbox value i $i is ${checkValues[i]}");
+    }
     notesController.text = member.note;
+    _dropValue = member.position;
+    debugPrint('value of dropvalue is $_dropValue');
+    attendenceController.text = member.attendance.toString();
 
     // TODO: implement build
     return WillPopScope(
@@ -272,12 +271,13 @@ class MemberDetailState extends State<MemberDetail> {
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       focusNode: _emailFocus,
-//                      onFieldSubmitted: (term) {
-//                        _fieldFocusChange(context, _emailFocus, _positionFocus);
-//                      },
+                      onFieldSubmitted: (term) {
+                        _fieldFocusChange(context, _emailFocus, _positionFocus);
+                      },
                       controller: emailController,
                       style: textStyle,
                       onChanged: (value) {
+                        debugPrint("I have got $value as email");
                         updateEmail();
                       },
                       decoration: InputDecoration(
@@ -467,13 +467,12 @@ class MemberDetailState extends State<MemberDetail> {
                         }).toList(),
                         style: textStyle,
                         focusNode: _positionFocus,
-
                         value: _dropValue,
                         // TO DO change this to member's actual position
                         onChanged: (valueSelected) {
                           setState(() {
                             _dropValue = valueSelected;
-                            updatePosition(valueSelected);
+                            //updatePosition(valueSelected);
                             _fieldFocusChange(context, _emailFocus, _positionFocus);
                           });
                         },
@@ -701,6 +700,8 @@ class MemberDetailState extends State<MemberDetail> {
 
   void updateEmail() {
    member.email = emailController.text;
+   debugPrint("Updated email as ${member.email}");
+   helper.updateMember(member);
   }
 
   void updateAttendance() {

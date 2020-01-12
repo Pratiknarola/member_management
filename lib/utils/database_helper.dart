@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -64,6 +65,7 @@ class DatabaseHelper {
   //insert operation
   Future<int> insertMember(Member member) async {
     var db = await this.database;
+    debugPrint("got value to insert as ${member.email}");
     var result = await db.insert(memberTable, member.toMap());
     return result;
   }

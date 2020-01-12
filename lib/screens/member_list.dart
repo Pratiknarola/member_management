@@ -38,7 +38,7 @@ class MemberListState extends State<MemberList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint("FAB clicked");
-          navigateToDetail(Member("", 0, 0, "", [], "", ""), "Add Member");
+          navigateToDetail(Member("", 0, 0, "", [], "Other", ""), "Add Member");
         },
         tooltip: "Add note",
         child: Icon(Icons.person_add),
