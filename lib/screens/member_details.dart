@@ -79,9 +79,9 @@ class MemberDetailState extends State<MemberDetail> {
   List<bool> checkValues;
   String _dropValue;
 
-  void setCheckvalues(List<bool> values){
-    this.checkValues = values;
-  }
+//  void setCheckvalues(List<bool> values){
+//    this.checkValues = values;
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,16 +102,19 @@ class MemberDetailState extends State<MemberDetail> {
       mobileController.text = member.mobilenumber.toString();
     }
     emailController.text = member.email;
+    if(member.fields == null){
+      member.fields = List<String>();
+    }
     for(int i = 0; i < member.fields.length; i++){
       debugPrint("field value ${member.fields[i]}");
     }
-    setCheckvalues(getFieldBool(member.fields));
+    checkValues = getFieldBool(member.fields);
     for(int i = 0; i < checkValues.length; i++){
       debugPrint("checkbox value i $i is ${checkValues[i]}");
     }
     notesController.text = member.note;
     _dropValue = member.position;
-    debugPrint('value of dropvalue is $_dropValue');
+    //debugPrint('value of dropvalue is $_dropValue');
     attendenceController.text = member.attendance.toString();
 
     // TODO: implement build

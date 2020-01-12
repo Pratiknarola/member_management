@@ -65,7 +65,7 @@ class DatabaseHelper {
   //insert operation
   Future<int> insertMember(Member member) async {
     var db = await this.database;
-    debugPrint("got value to insert as ${member.email}");
+    debugPrint("got value to insert as ${member.toMap()['fields']}");
     var result = await db.insert(memberTable, member.toMap());
     return result;
   }
